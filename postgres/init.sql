@@ -1,7 +1,19 @@
-FROM nginx:1.28-alpine
+CREATE TABLE users(
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+id SERIAL PRIMARY KEY,
 
-COPY html/ /usr/share/nginx/html/
+name VARCHAR(100),
 
-EXPOSE 80
+email VARCHAR(100)
+
+);
+
+INSERT INTO users(name,email)
+
+VALUES
+
+('Alice','alice@test.com'),
+
+('Bob','bob@test.com'),
+
+('Charlie','charlie@test.com');
