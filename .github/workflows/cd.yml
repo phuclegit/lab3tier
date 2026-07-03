@@ -1,0 +1,52 @@
+name: Deploy to Production
+
+on:
+  workflow_run:
+    workflows: ["Build Docker Images"]
+    types:
+      - completed
+
+jobs:
+
+  deploy:
+
+    # Chỉ deploy khi CI thành công
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+
+        with:
+
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+          script: |
+
+            echo "===== Go to project ====="
+
+            cd /home/osboxes/devops/deploy_lab3tier
+
+            echo "===== Login Docker Hub ====="
+
+            echo "${{ secrets.DOCKER_PASSWORD }}" | \
+            docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+            echo "===== Pull New Images ====="
+
+            docker compose -f docker-compose.prod.yml pull
+
+            echo "===== Restart Containers ====="
+
+            docker compose -f docker-compose.prod.yml up -d
+
+            echo "===== Health Check ====="
+
+            curl -f http://localhost/health
+
+            echo "===== Deploy Success ====="
