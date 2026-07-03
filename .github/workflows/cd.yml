@@ -30,7 +30,9 @@ jobs:
         run: |
           cd /home/osboxes/devops/deploy_lab3tier
           docker compose -f docker-compose.prod.yml up -d
-
+      - name: Wait application
+        run: |
+          sleep 15
       - name: Health check
         run: |
           curl -f http://localhost/health
