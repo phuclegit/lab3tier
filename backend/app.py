@@ -22,12 +22,7 @@ def users():
 
 @app.route("/health")
 def health():
-    return jsonify({
-        "application": "UP",
-        "database": check_database(),
-        "users": count_users(),
-        "version": VERSION
-    })
+    return "ERROR", 500
 
 
 if __name__ == "__main__":
