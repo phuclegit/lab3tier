@@ -18,9 +18,11 @@ jobs:
         run: |
           cd /home/osboxes/devops/deploy_lab3tier
 
-      - name: Set image tags
+      - name: Set rollback version
         run: |
-          echo "IMAGE_TAG = ${{ github.event.inputs.version }}" > .env
+          cd /home/osboxes/devops/deploy_lab3tier
+          TAG=${{ github.event.inputs.version }}
+          sed -i "s/^IMAGE_TAG=.*/IMAGE_TAG=$TAG/" .env
 
       - name: Pull specified images
         run: |
