@@ -43,6 +43,7 @@ jobs:
             phuclegit/frontend:${{ github.sha }}
     
   deploy:
+    needs: build
 
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
