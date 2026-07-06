@@ -1,17 +1,14 @@
-name: Deploy
-
+name: Rollback
 on:
-  workflow_run:
-    workflows:
-      - Build Docker Images
-    types:
-      - completed
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Docker image tag (github.sha) to rollback to'
+        required: true
 
 jobs:
 
-  deploy:
-
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+  rollback:
 
     runs-on: self-hosted
 
@@ -25,7 +22,7 @@ jobs:
         run: |
           echo "IMAGE_TAG = ${{ github.event.inputs.version }}" > .env
 
-      - name: Pull newest images
+      - name: Pull specified images
         run: |
           cd /home/osboxes/devops/deploy_lab3tier
           docker compose -f docker-compose.prod.yml pull
