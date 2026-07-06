@@ -56,8 +56,7 @@ jobs:
       - name: Set image tag
         run: |
           cd /home/osboxes/devops/deploy_lab3tier
-          TAG=${{ github.event.workflow_run.head_sha }}
-          sed -i "s/^IMAGE_TAG=.*/IMAGE_TAG=$TAG/" .env
+          sed -i "s/^IMAGE_TAG=.*/IMAGE_TAG=${{ github.sha }}/" .env
 
       - name: Pull newest images
         run: |
