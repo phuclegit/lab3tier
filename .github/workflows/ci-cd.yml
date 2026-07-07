@@ -7,7 +7,53 @@ on:
 
 jobs:
 
+# Build
   build:
+
+  runs-on: ubuntu-latest
+
+  steps:
+
+    - uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Install dependencies
+      run: |
+        pip install -r backend/requirements.txt
+
+# Test
+  test:
+  
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    steps:
+    
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r backend/requirements.txt
+
+      - name: Run tests
+        run: |
+          python -m compileall backend
+          echo "all test passed !"
+
+# Docker Build and Push 
+  docker-build-and-push:
+
+    needs: test
 
     runs-on: ubuntu-latest
 
@@ -41,9 +87,9 @@ jobs:
           tags: |
             phuclegit/frontend:latest
             phuclegit/frontend:${{ github.sha }}
-    
+# Deploy
   deploy:
-    needs: build
+    needs: docker-build-and-push
 
     runs-on: self-hosted
 
