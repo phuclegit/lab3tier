@@ -50,6 +50,17 @@ jobs:
           python -m compileall backend
           echo "all test passed !"
 
+# Secret scan
+  secret-scan:
+
+    needs: test
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: gitleaks/gitleaks-action@v2
+
 # Docker Build and Push 
   docker-build-and-push:
 
@@ -87,6 +98,23 @@ jobs:
           tags: |
             phuclegit/frontend:latest
             phuclegit/frontend:${{ github.sha }}
+
+# Trivy : quét lỗ hổng
+  trivy-scan:
+
+    needs: docker-build-and-push
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Scan backend image
+        uses: auqasecurity/trivy-action@master
+        with:
+          image-ref: phuclegit/backend:${{github.sha}}
+
 # Deploy
   deploy:
     needs: docker-build-and-push
