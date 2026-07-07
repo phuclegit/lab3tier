@@ -64,7 +64,7 @@ jobs:
 # Docker Build and Push 
   docker-build-and-push:
 
-    needs: test
+    needs: secret-scan
 
     runs-on: ubuntu-latest
 
