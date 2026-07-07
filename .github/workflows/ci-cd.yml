@@ -117,7 +117,8 @@ jobs:
 
 # Deploy
   deploy:
-    needs: docker-build-and-push
+  
+    needs: trivy-scan
 
     runs-on: self-hosted
 
